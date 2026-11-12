@@ -101,6 +101,53 @@ button:hover{
     display:block;
 }
 
+.lottery-drum{
+    background:#111827;
+    border:2px solid #22c55e;
+    border-radius:16px;
+    padding:30px;
+    text-align:center;
+    font-size:3rem;
+    font-weight:bold;
+    margin-bottom:20px;
+    min-height:80px;
+}
+
+.pick-card{
+    background:#0f172a;
+    border:1px solid #475569;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    text-align:center;
+    animation:reveal .8s ease;
+}
+
+.pick-number{
+    font-size:.9rem;
+    color:#94a3b8;
+}
+
+.pick-name{
+    font-size:2rem;
+    font-weight:bold;
+}
+
+@keyframes reveal{
+
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+
+}
+
+
 </style>
 </head>
 
@@ -189,11 +236,17 @@ Run 10,000 Simulations
 
 <h2>Draft Draw</h2>
 
+<div id="currentDraw" class="lottery-drum">
+WAITING TO START
+</div>
+
 <button id="startDraw">
 START DRAW
 </button>
 
 <div id="drawResults"></div>
+
+<div id="liveOdds"></div>
 
 </div>
 
@@ -323,6 +376,61 @@ return order;
 
 }
 
+function sleep(ms){
+
+    return new Promise(
+        resolve => setTimeout(resolve, ms)
+    );
+
+}
+
+function renderOdds(teams){
+
+    if(teams.length === 0){
+
+        document
+            .getElementById("liveOdds")
+            .innerHTML="";
+
+        return;
+    }
+
+    const total =
+        teams.reduce(
+            (sum,t)=>sum+t.weight,
+            0
+        );
+
+    let html = `
+        <h3>Remaining Odds</h3>
+        <table>
+        <tr>
+            <th>Manager</th>
+            <th>Entries</th>
+            <th>Chance</th>
+        </tr>
+    `;
+
+    teams.forEach(team=>{
+
+        html += `
+            <tr>
+                <td>${team.name}</td>
+                <td>${team.weight}</td>
+                <td>${((team.weight/total)*100).toFixed(2)}%</td>
+            </tr>
+        `;
+
+    });
+
+    html += "</table>";
+
+    document
+        .getElementById("liveOdds")
+        .innerHTML = html;
+
+}
+
 function runSimulation(count){
 
 const teams=getTeams();
@@ -402,41 +510,101 @@ document
 .getElementById("startDraw")
 .onclick = async () => {
 
-    const result = weightedOrder(getTeams());
-
-    const container =
-        document.getElementById("drawResults");
-
-    container.innerHTML = "";
-
-    for(let i = 0; i < result.length; i++){
-
-        await new Promise(resolve =>
-            setTimeout(resolve, 1500)
+    let pool =
+        structuredClone(
+            getTeams()
         );
+
+    renderOdds(pool);
+
+    const drum =
+        document.getElementById(
+            "currentDraw"
+        );
+
+    const results =
+        document.getElementById(
+            "drawResults"
+        );
+
+    results.innerHTML = "";
+
+    let pick = 1;
+
+    while(pool.length){
+
+        const names =
+            pool.map(
+                x => x.name
+            );
+
+        drum.innerHTML =
+            `DRAWING PICK #${pick}`;
+
+        const spinner =
+            setInterval(() => {
+
+                drum.innerText =
+                    names[
+                        Math.floor(
+                            Math.random() *
+                            names.length
+                        )
+                    ];
+
+            }, 100);
+
+        await sleep(4000);
+
+        clearInterval(spinner);
+
+        const winnerIndex =
+            weightedPick(pool);
+
+        const winner =
+            pool[winnerIndex];
+
+        drum.innerHTML =
+            `🏆 ${winner.name}`;
 
         const card =
             document.createElement("div");
 
-        card.className = "pick-card";
+        card.className =
+            "pick-card";
 
         card.innerHTML = `
             <div class="pick-number">
-                PICK #${i+1}
+                PICK #${pick}
             </div>
+
             <div class="pick-name">
-                ${result[i].name}
+                ${winner.name}
             </div>
         `;
 
-        container.appendChild(card);
+        results.appendChild(card);
 
         card.scrollIntoView({
             behavior:"smooth",
             block:"end"
         });
 
+        pool.splice(
+            winnerIndex,
+            1
+        );
+
+        renderOdds(pool);
+
+        await sleep(2500);
+
+        pick++;
+
     }
+
+    drum.innerHTML =
+        "DRAFT COMPLETE";
 
 };
 

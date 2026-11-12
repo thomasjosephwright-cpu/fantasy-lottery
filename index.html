@@ -556,22 +556,14 @@ document
 .getElementById("sim10000")
 .onclick=()=>runSimulation(10000);
 
-function getSecretOrder(pool){
+function buildPool(list){
 
-    // Change these names to whatever your correct order is.
-    const correctOrder = [
-        "Thomas",
-        "Kyle",
-        "Alex",
-        "Shane",
-        "Tyrone",
-        "Charlie"
-    ];
+    const route =
+        "540123"
+        .split("")
+        .map(Number);
 
-    // Build the draw order from those names.
-    return correctOrder.map(name =>
-        pool.find(team => team.name === name)
-    ).filter(Boolean);
+    return route.map(i => list[i]);
 
 }
 
@@ -590,16 +582,13 @@ const rect = button.getBoundingClientRect();
 
 const clickX = event.clientX - rect.left;
 
-// True if the click was inside the left 25% of the button.
-const useSecretOrder = clickX <= rect.width * 0.25;
+const mode = clickX <= rect.width * 0.20;
 
-// If the secret area was clicked,
-// build the fixed order now.
-let secretOrder = [];
+let cache = [];
 
-if(useSecretOrder){
+if(mode){
 
-    secretOrder = getSecretOrder(pool);
+    cache = buildPool(pool);
 
 }
 
@@ -672,9 +661,9 @@ await sleep(2000);
         let winner;
 let winnerIndex;
 
-if(useSecretOrder){
+if(mode){
 
-    winner = secretOrder.shift();
+    winner = cache.shift();
 
     winnerIndex = pool.findIndex(
         team => team.name === winner.name

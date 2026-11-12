@@ -167,22 +167,6 @@ Add Manager
 
 <div id="entryTotal"></div>
 
-function updateTotal(){
-
-    const total =
-        getTeams()
-        .reduce(
-            (sum,t)=>sum+t.weight,
-            0
-        );
-
-    document
-    .getElementById("entryTotal")
-    .innerHTML =
-    `<strong>Total Entries:</strong> ${total}`;
-
-}
-
 </div>
 
 <div class="card">
@@ -251,6 +235,22 @@ tr.remove();
 };
 
 teamTable.appendChild(tr);
+
+}
+
+function updateTotal(){
+
+    const total =
+        getTeams()
+        .reduce(
+            (sum,t)=>sum+t.weight,
+            0
+        );
+
+    document
+        .getElementById("entryTotal")
+        .innerHTML =
+        `<strong>Total Entries:</strong> ${total}`;
 
 }
 

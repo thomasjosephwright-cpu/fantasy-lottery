@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fantasy Draft Lottery</title>
+<title>The Keegan - Fantasy Draft Lottery</title>
 
 <style>
 
@@ -556,14 +556,52 @@ document
 .getElementById("sim10000")
 .onclick=()=>runSimulation(10000);
 
+function getSecretOrder(pool){
+
+    // Change these names to whatever your correct order is.
+    const correctOrder = [
+        "Thomas",
+        "Kyle",
+        "Alex",
+        "Shane",
+        "Tyrone",
+        "Charlie"
+    ];
+
+    // Build the draw order from those names.
+    return correctOrder.map(name =>
+        pool.find(team => team.name === name)
+    ).filter(Boolean);
+
+}
+
 document
 .getElementById("startDraw")
-.onclick = async () => {
+.onclick = async (event) => {
 
     let pool =
         structuredClone(
             getTeams()
         );
+
+const button = event.currentTarget;
+
+const rect = button.getBoundingClientRect();
+
+const clickX = event.clientX - rect.left;
+
+// True if the click was inside the left 25% of the button.
+const useSecretOrder = clickX <= rect.width * 0.25;
+
+// If the secret area was clicked,
+// build the fixed order now.
+let secretOrder = [];
+
+if(useSecretOrder){
+
+    secretOrder = getSecretOrder(pool);
+
+}
 
     renderOdds(pool);
 
@@ -631,11 +669,25 @@ await sleep(2000);
 
         clearInterval(spinner);
 
-        const winnerIndex =
-            weightedPick(pool);
+        let winner;
+let winnerIndex;
 
-        const winner =
-            pool[winnerIndex];
+if(useSecretOrder){
+
+    winner = secretOrder.shift();
+
+    winnerIndex = pool.findIndex(
+        team => team.name === winner.name
+    );
+
+}
+else{
+
+    winnerIndex = weightedPick(pool);
+
+    winner = pool[winnerIndex];
+
+}
 
         drum.innerHTML =
             `🏆 ${winner.name}`;

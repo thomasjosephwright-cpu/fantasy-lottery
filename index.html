@@ -365,6 +365,36 @@ let order=[];
 
 while(pool.length){
 
+if(finalPick){
+
+    const winner = pool[0];
+
+    drum.innerHTML =
+        "🏆 FIRST OVERALL PICK";
+
+    await sleep(2000);
+
+    const card =
+        document.createElement("div");
+
+    card.className = "pick-card";
+
+    card.innerHTML = `
+        <div class="pick-number">
+            🏆 FIRST OVERALL PICK
+        </div>
+
+        <div class="pick-name">
+            ${winner.name}
+        </div>
+    `;
+
+    results.appendChild(card);
+
+    break;
+
+}
+    
 const idx=
 weightedPick(pool);
 
@@ -673,7 +703,7 @@ await sleep(2000);
 
         renderOdds(pool);
 
-        await sleep(4000);
+        await sleep(5000);
 
         pick--;
 

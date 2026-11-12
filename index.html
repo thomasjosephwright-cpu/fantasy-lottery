@@ -1,745 +1,2349 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>The Keegan - Fantasy Draft Lottery</title>
 
 <style>
 
-body{
-    font-family: Segoe UI, Arial, sans-serif;
-    max-width:1200px;
-    margin:auto;
-    padding:20px;
-    background:#0f172a;
-    color:white;
+*{
+    box-sizing:border-box;
 }
+
+body{
+
+    font-family:
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+    max-width:1200px;
+
+    margin:auto;
+
+    padding:20px;
+
+    background:
+    radial-gradient(
+        circle at top,
+        #1e293b,
+        #020617
+    );
+
+    color:white;
+
+}
+
+
+/* ==========================
+   GENERAL CARDS
+========================== */
+
 
 .card{
-    background:#1e293b;
-    padding:20px;
-    border-radius:16px;
+
+    background:
+    rgba(30,41,59,.95);
+
+    padding:25px;
+
+    border-radius:18px;
+
     margin-bottom:20px;
-    box-shadow:0 0 15px rgba(0,0,0,.4);
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.35);
+
+    border:
+    1px solid rgba(255,255,255,.05);
+
 }
 
-h1,h2,h3{
+
+h1,
+h2,
+h3{
+
     margin-top:0;
+
 }
+
+
+.subtitle{
+
+    font-size:1.2rem;
+
+    font-style:italic;
+
+    color:#cbd5e1;
+
+    margin-top:-10px;
+
+}
+
+
+/* ==========================
+   BUTTONS
+========================== */
+
+
+button{
+
+    padding:12px 18px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#3b82f6;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-weight:bold;
+
+    transition:.2s;
+
+}
+
+
+button:hover{
+
+    transform:translateY(-2px);
+
+    opacity:.9;
+
+}
+
+
+button:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+}
+
+
+#startDraw{
+
+    width:100%;
+
+    font-size:1.6rem;
+
+    padding:22px;
+
+    background:#22c55e;
+
+    margin-bottom:10px;
+
+}
+
+
+#resetDraw{
+
+    width:100%;
+
+    background:#ef4444;
+
+}
+
+
+
+/* ==========================
+   HEADER
+========================== */
+
+
+.hero{
+
+    text-align:center;
+
+    padding:35px 20px;
+
+}
+
+
+.hero h1{
+
+    font-size:3rem;
+
+    margin-bottom:5px;
+
+}
+
+
+.hero .badge{
+
+    display:inline-block;
+
+    margin-top:15px;
+
+    padding:6px 18px;
+
+    border-radius:50px;
+
+    background:#334155;
+
+    color:#94a3b8;
+
+    font-size:.9rem;
+
+}
+
+
+/* ==========================
+   TABLES
+========================== */
+
 
 table{
+
     width:100%;
+
     border-collapse:collapse;
+
 }
+
 
 th{
+
     background:#334155;
+
 }
 
-th,td{
-    padding:10px;
-    border-bottom:1px solid #475569;
+
+th,
+td{
+
+    padding:12px;
+
+    border-bottom:
+    1px solid #475569;
+
 }
+
+
+/* ==========================
+   INPUTS
+========================== */
+
 
 input,
 select{
+
     width:100%;
-    padding:8px;
+
+    padding:10px;
+
     background:#334155;
-    color:white;
-    border:1px solid #475569;
-    border-radius:6px;
-}
 
-button{
-    padding:10px 15px;
-    border:none;
+    color:white;
+
+    border:
+    1px solid #475569;
+
     border-radius:8px;
-    background:#3b82f6;
-    color:white;
-    cursor:pointer;
-    font-weight:bold;
+
 }
 
-button:hover{
-    opacity:.9;
-}
 
-#startDraw{
-    width:100%;
-    font-size:1.5rem;
-    padding:20px;
-    background:#22c55e;
-}
 
-.pick-card{
-    background:#0f172a;
-    border:1px solid #475569;
-    border-radius:12px;
-    padding:20px;
-    margin-bottom:15px;
-    text-align:center;
-}
+/* ==========================
+   LOTTERY DISPLAY
+========================== */
 
-.pick-number{
-    font-size:0.9rem;
-    color:#94a3b8;
-}
-
-.pick-name{
-    font-size:2rem;
-    font-weight:bold;
-    margin-top:8px;
-}
-
-.settings{
-    display:none;
-}
-
-.settings.open{
-    display:block;
-}
 
 .lottery-drum{
-    background:#111827;
-    border:2px solid #22c55e;
-    border-radius:16px;
-    padding:30px;
+
+    background:#020617;
+
+    border:
+    2px solid #22c55e;
+
+    border-radius:20px;
+
+    padding:35px;
+
     text-align:center;
+
     font-size:3rem;
+
     font-weight:bold;
+
+    min-height:120px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
     margin-bottom:20px;
-    min-height:80px;
+
 }
+
+
+.drawing-label{
+
+    font-size:1rem;
+
+    color:#94a3b8;
+
+}
+
+
+.countdown{
+
+    font-size:5rem;
+
+}
+
+
+
+/* ==========================
+   PICK CARDS
+========================== */
+
 
 .pick-card{
+
     background:#0f172a;
-    border:1px solid #475569;
-    border-radius:12px;
+
+    border:
+    1px solid #475569;
+
+    border-radius:15px;
+
     padding:20px;
+
     margin-bottom:15px;
+
     text-align:center;
-    animation:reveal .8s ease;
+
+    animation:
+    reveal .7s ease;
+
 }
+
+
+.pick-card.final{
+
+    border:
+    2px solid #facc15;
+
+    box-shadow:
+    0 0 30px rgba(250,204,21,.4);
+
+}
+
 
 .pick-number{
+
     font-size:.9rem;
+
     color:#94a3b8;
+
 }
 
+
 .pick-name{
-    font-size:2rem;
+
+    font-size:2.3rem;
+
     font-weight:bold;
+
+    margin-top:8px;
+
 }
+
+
+
+/* ==========================
+   ODDS
+========================== */
+
+
+.odds-row{
+
+    margin-bottom:15px;
+
+}
+
+
+.odds-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:5px;
+
+}
+
+
+.progress{
+
+    height:20px;
+
+    background:#0f172a;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+
+.progress-fill{
+
+    height:100%;
+
+    background:#22c55e;
+
+    transition:
+    width 1s ease;
+
+}
+
+
+
+/* ==========================
+   REMAINING TEAMS
+========================== */
+
+
+.remaining{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:10px;
+
+}
+
+
+.team-pill{
+
+    background:#334155;
+
+    padding:10px 15px;
+
+    border-radius:20px;
+
+}
+
+
+
+/* ==========================
+   FINAL SCREEN
+========================== */
+
+
+.final-banner{
+
+    text-align:center;
+
+    padding:30px;
+
+    font-size:2rem;
+
+}
+
+
+.champion{
+
+    font-size:4rem;
+
+    color:#facc15;
+
+    text-shadow:
+    0 0 20px rgba(250,204,21,.6);
+
+}
+
+
+
+/* ==========================
+   SETTINGS
+========================== */
+
+
+.settings{
+
+    display:none;
+
+}
+
+
+.settings.open{
+
+    display:block;
+
+}
+
+
+
+/* ==========================
+   ANIMATIONS
+========================== */
+
 
 @keyframes reveal{
 
     from{
+
         opacity:0;
-        transform:translateY(20px);
+
+        transform:
+        translateY(25px);
+
     }
 
+
     to{
+
         opacity:1;
-        transform:translateY(0);
+
+        transform:
+        translateY(0);
+
+    }
+
+}
+
+
+@keyframes pulse{
+
+    0%{
+
+        transform:scale(1);
+
+    }
+
+    50%{
+
+        transform:scale(1.05);
+
+    }
+
+    100%{
+
+        transform:scale(1);
+
+    }
+
+}
+
+
+.pulse{
+
+    animation:
+    pulse 1s infinite;
+
+}
+
+
+
+/* ==========================
+   MOBILE
+========================== */
+
+
+@media(max-width:700px){
+
+    body{
+
+        padding:10px;
+
+    }
+
+
+    .hero h1{
+
+        font-size:2rem;
+
+    }
+
+
+    .lottery-drum{
+
+        font-size:2rem;
+
     }
 
 }
 
 
 </style>
+  
 </head>
 
 <body>
 
-<div class="card">
 
-<h1>Fantasy Draft Lottery</h1>
+<!-- ==========================
+     HEADER
+========================== -->
 
-<button id="toggleSettings">
-Settings
-</button>
+<div class="card hero">
 
-<div id="settingsPanel" class="settings">
+    <h1>
+        The Keegan
+        <br>
+        Fantasy Draft Lottery
+    </h1>
 
-<h3>Animation</h3>
+    <div class="subtitle">
+        "I would love it if we beat them..."
+    </div>
 
-<label>
-Reveal Style
-<select id="revealStyle">
-<option>Smooth</option>
-<option>Sequential</option>
-<option>Historical</option>
-</select>
-</label>
-
-<br><br>
-
-<label>
-Animation Speed
-<select>
-<option>Fast</option>
-<option selected>Normal</option>
-<option>Slow</option>
-</select>
-</label>
+    <div class="badge">
+        OFFICIAL DRAFT LOTTERY SYSTEM
+    </div>
 
 </div>
 
-</div>
+
+
+<!-- ==========================
+     SETTINGS
+========================== -->
 
 <div class="card">
 
-<h2>Lottery Entries</h2>
+    <button id="toggleSettings">
+        Settings
+    </button>
+
+
+    <div id="settingsPanel" class="settings">
+
+
+        <h3>
+            Animation Settings
+        </h3>
+
+
+        <label>
+            Reveal Style
+
+            <select id="revealStyle">
+
+                <option>
+                    Broadcast
+                </option>
+
+                <option>
+                    Smooth
+                </option>
+
+                <option>
+                    Fast
+                </option>
+
+            </select>
+
+        </label>
+
+
+        <br><br>
+
+
+        <label>
+
+            Animation Speed
+
+            <select id="animationSpeed">
+
+                <option value="fast">
+                    Fast
+                </option>
+
+                <option value="normal" selected>
+                    Normal
+                </option>
+
+                <option value="slow">
+                    Slow
+                </option>
+
+            </select>
+
+
+        </label>
+
+
+    </div>
+
+</div>
+
+
+
+
+<!-- ==========================
+     TEAMS
+========================== -->
+
+
+<div class="card">
+
+
+<h2>
+    Lottery Entries
+</h2>
+
 
 <table>
 
+
 <thead>
+
 <tr>
-<th>Manager</th>
-<th>Entries</th>
-<th></th>
+
+<th>
+Manager
+</th>
+
+<th>
+Entries
+</th>
+
+<th>
+</th>
+
 </tr>
+
 </thead>
 
+
 <tbody id="teamTable">
+
 </tbody>
 
+
 </table>
+
+
+<br>
+
 
 <button id="addTeam">
 Add Manager
 </button>
 
-<div id="entryTotal"></div>
+
+<div id="entryTotal">
 
 </div>
 
+
+</div>
+
+
+
+
+
+<!-- ==========================
+     SIMULATIONS
+========================== -->
+
+
 <div class="card">
 
-<h2>Simulation</h2>
+
+<h2>
+Simulation
+</h2>
+
+
+<p>
+Test the odds before running the live lottery.
+</p>
+
 
 <button id="sim1000">
 Run 1,000 Simulations
 </button>
 
+
 <button id="sim10000">
 Run 10,000 Simulations
 </button>
 
-<div id="simulationResults"></div>
+
+<div id="simulationResults">
 
 </div>
+
+
+</div>
+
+
+
+
+
+<!-- ==========================
+     LIVE LOTTERY
+========================== -->
+
 
 <div class="card">
 
-<h2>Draft Draw</h2>
+
+<h2>
+Draft Lottery
+</h2>
+
+
 
 <div id="currentDraw" class="lottery-drum">
+
 WAITING TO START
+
 </div>
+
+
+
+<div id="remainingPanel">
+
+</div>
+
+
 
 <button id="startDraw">
+
 START DRAW
+
 </button>
 
-<div id="liveOdds"></div>
 
-<div id="drawResults"></div>
+<button id="resetDraw">
+
+RESET DRAW
+
+</button>
+
+
+
+<div id="liveOdds">
 
 </div>
+
+
+
+<div id="drawResults">
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<!-- ==========================
+     FINAL ORDER
+========================== -->
+
+
+<div class="card">
+
+
+<h2>
+Final Draft Order
+</h2>
+
+
+<div id="finalStandings">
+
+</div>
+
+
+</div>
+
+
+
 
 <script>
 
-const teamTable = document.getElementById("teamTable");
+// ==========================
+// CORE VARIABLES
+// ==========================
+
+
+const teamTable =
+    document.getElementById("teamTable");
+
 
 let previousOdds = {};
 
+
+let finalOrder = [];
+
+
+let drawing = false;
+
+
+
+// ==========================
+// STARTING TEAMS
+// ==========================
+
+
 const startingTeams = [
-["Shane",12],
-["Alex",8],
-["Kyle",6],
-["Thomas",4],
-["Tyrone",2],
-["Charlie",1]
+
+    ["Shane",12],
+
+    ["Alex",8],
+
+    ["Kyle",6],
+
+    ["Thomas",4],
+
+    ["Tyrone",2],
+
+    ["Charlie",1]
+
 ];
+
+
+
+
+// ==========================
+// TEAM MANAGEMENT
+// ==========================
+
 
 function addRow(name="", entries=10){
 
-const tr=document.createElement("tr");
 
-tr.innerHTML=`
-<td>
-<input type="text" value="${name}">
-</td>
+    const tr =
+        document.createElement("tr");
 
-<td>
-<input type="number" min="1" value="${entries}">
-</td>
 
-<td>
-<button class="remove">
-Remove
-</button>
-</td>
-`;
+    tr.innerHTML = `
 
-tr.querySelector(".remove").onclick=()=>{
-tr.remove();
-};
+    <td>
 
-teamTable.appendChild(tr);
+        <input 
+        type="text"
+        value="${name}">
 
-}
+    </td>
 
-function updateTotal(){
 
-    const total =
-        getTeams()
-        .reduce(
-            (sum,t)=>sum+t.weight,
-            0
-        );
+    <td>
 
-    document
-        .getElementById("entryTotal")
-        .innerHTML =
-        `<strong>Total Entries:</strong> ${total}`;
+        <input
+        type="number"
+        min="1"
+        value="${entries}">
 
-}
+    </td>
 
-startingTeams.forEach(t=>addRow(t[0],t[1]));
 
-document.getElementById("addTeam")
-.onclick=()=>{
-addRow("New Manager",10);
-};
+    <td>
 
-function getTeams(){
+        <button class="remove">
 
-return [...teamTable.children]
-.map(row=>({
+        Remove
 
-name:
-row.cells[0]
-.querySelector("input").value,
+        </button>
 
-weight:
-Number(
-row.cells[1]
-.querySelector("input").value)
+    </td>
 
-}))
-.filter(t=>t.weight>0);
-
-}
-
-function weightedPick(pool){
-
-const total=
-pool.reduce((s,p)=>
-s+p.weight,0);
-
-let r=Math.random()*total;
-
-for(let i=0;i<pool.length;i++){
-
-r-=pool[i].weight;
-
-if(r<=0){
-return i;
-}
-
-}
-
-return 0;
-
-}
-
-function weightedOrder(data){
-
-let pool=structuredClone(data);
-
-let order=[];
-
-while(pool.length){
-    
-const idx=
-weightedPick(pool);
-
-order.push(pool[idx]);
-
-pool.splice(idx,1);
-
-}
-
-return order;
-
-}
-
-function sleep(ms){
-
-    return new Promise(
-        resolve => setTimeout(resolve, ms)
-    );
-
-}
-
-function renderOdds(teams){
-
-    if(teams.length === 0){
-
-        document
-            .getElementById("liveOdds")
-            .innerHTML="";
-
-        return;
-    }
-
-    const total =
-        teams.reduce(
-            (sum,t)=>sum+t.weight,
-            0
-        );
-
-    teams.forEach(team=>{
-
-        team.currentOdds =
-            (team.weight / total) * 100;
-
-    });
-
-    teams.sort(
-        (a,b) =>
-            b.currentOdds -
-            a.currentOdds
-    );
-
-    let html = `
-        <h3>🏆 Race For #1 Pick</h3>
-
-        <table>
-        <tr>
-            <th>Rank</th>
-            <th>Manager</th>
-            <th>Chance of #1</th>
-        </tr>
     `;
 
-    teams.forEach((team,index)=>{
 
-        const medals = [
-            "🥇",
-            "🥈",
-            "🥉"
-        ];
 
-        const rank =
-            medals[index] ||
-            (index + 1);
+    tr.querySelector(".remove")
+    .onclick = () => {
 
-        let previous =
-            previousOdds[team.name];
+        if(!drawing){
 
-        let change = "";
+            tr.remove();
 
-        if(previous !== undefined){
+            updateTotal();
 
-            const diff =
-                team.currentOdds -
-                previous;
-
-            if(diff > 0){
-
-                change =
-                ` <span style="color:#22c55e;">
-                ↑ +${diff.toFixed(2)}%
-                </span>`;
-            }
         }
 
-        previousOdds[team.name] =
-            team.currentOdds;
+    };
 
-        html += `
-            <tr>
-                <td>${rank}</td>
-                <td>${team.name}</td>
-                <td>
-                    ${team.currentOdds.toFixed(2)}%
-                    ${change}
-                </td>
-            </tr>
-        `;
 
-    });
+    teamTable.appendChild(tr);
 
-    html += "</table>";
 
-    document
-        .getElementById("liveOdds")
-        .innerHTML = html;
-}
-function runSimulation(count){
-
-const teams=getTeams();
-
-const wins={};
-
-teams.forEach(
-t=>wins[t.name]=0
-);
-
-for(let i=0;i<count;i++){
-
-const winner=
-weightedOrder(teams)[0];
-
-wins[winner.name]++;
+    updateTotal();
 
 }
 
-const totalWeight =
-teams.reduce(
-(sum,t)=>sum+t.weight,
-0
-);
 
-let html = `
-<h3>Pick #1 Odds</h3>
 
-<table>
-<tr>
-<th>Manager</th>
-<th>Entries</th>
-<th>Theoretical</th>
-<th>Simulated</th>
-</tr>
-`;
 
-teams.forEach(team=>{
+startingTeams.forEach(team => {
 
-const simulated =
-((wins[team.name]/count)*100)
-.toFixed(2);
-
-const theoretical =
-((team.weight/totalWeight)*100)
-.toFixed(2);
-
-html += `
-<tr>
-<td>${team.name}</td>
-<td>${team.weight}</td>
-<td>${theoretical}%</td>
-<td>${simulated}%</td>
-</tr>
-`;
+    addRow(
+        team[0],
+        team[1]
+    );
 
 });
 
-html += "</table>";
+
+
+
 
 document
-.getElementById(
-"simulationResults")
-.innerHTML = html;
+.getElementById("addTeam")
+.onclick = () => {
+
+
+    if(!drawing){
+
+        addRow(
+            "New Manager",
+            10
+        );
+
+    }
+
+};
+
+
+
+
+
+
+function getTeams(){
+
+
+    return [
+
+        ...teamTable.children
+
+    ]
+
+    .map(row => ({
+
+
+        name:
+
+        row.cells[0]
+        .querySelector("input")
+        .value,
+
+
+        weight:
+
+        Number(
+
+            row.cells[1]
+            .querySelector("input")
+            .value
+
+        )
+
+
+    }))
+
+
+    .filter(team =>
+        team.weight > 0
+    );
+
 
 }
 
+
+
+
+
+
+function updateTotal(){
+
+
+    const total =
+
+    getTeams()
+
+    .reduce(
+
+        (sum,team) =>
+        sum + team.weight,
+
+        0
+
+    );
+
+
+    document
+    .getElementById("entryTotal")
+    .innerHTML =
+
+    `
+
+    <br>
+
+    <strong>
+    Total Entries:
+    </strong>
+
+    ${total}
+
+    `;
+
+
+}
+
+
+
+
+
+
+// ==========================
+// RANDOM DRAW LOGIC
+// ==========================
+
+
+function weightedPick(pool){
+
+
+    const total =
+
+    pool.reduce(
+
+        (sum,item)=>
+
+        sum + item.weight,
+
+        0
+
+    );
+
+
+
+    let roll =
+        Math.random()*total;
+
+
+
+    for(
+        let i=0;
+        i<pool.length;
+        i++
+    ){
+
+
+        roll -= pool[i].weight;
+
+
+
+        if(roll <= 0){
+
+            return i;
+
+        }
+
+
+    }
+
+
+
+    return 0;
+
+
+}
+
+
+
+
+
+function weightedOrder(data){
+
+
+    let pool =
+        structuredClone(data);
+
+
+    let order = [];
+
+
+
+    while(pool.length){
+
+
+        const index =
+            weightedPick(pool);
+
+
+
+        order.push(
+            pool[index]
+        );
+
+
+
+        pool.splice(
+            index,
+            1
+        );
+
+
+    }
+
+
+
+    return order;
+
+
+}
+
+
+
+
+
+function sleep(ms){
+
+
+    return new Promise(
+
+        resolve =>
+        setTimeout(
+            resolve,
+            ms
+        )
+
+    );
+
+
+}
+
+
+
+
+
+// ==========================
+// ODDS DISPLAY
+// ==========================
+
+
+function renderOdds(teams){
+
+
+    const container =
+        document.getElementById(
+            "liveOdds"
+        );
+
+
+    if(!teams.length){
+
+        container.innerHTML="";
+
+        return;
+
+    }
+
+
+
+    const total =
+
+    teams.reduce(
+
+        (sum,t)=>
+        sum+t.weight,
+
+        0
+
+    );
+
+
+
+    let html = `
+
+    <h3>
+    🏆 Race For #1 Pick
+    </h3>
+
+    `;
+
+
+
+    teams
+
+    .sort(
+        (a,b)=>
+        b.weight-a.weight
+    )
+
+    .forEach(team => {
+
+
+        const chance =
+        ((team.weight/total)*100)
+        .toFixed(1);
+
+
+
+        html += `
+
+
+        <div class="odds-row">
+
+
+            <div class="odds-header">
+
+
+                <span>
+                ${team.name}
+                </span>
+
+
+                <span>
+                ${chance}%
+                </span>
+
+
+            </div>
+
+
+
+            <div class="progress">
+
+
+                <div 
+                class="progress-fill"
+                style="width:${chance}%">
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        `;
+
+
+    });
+
+
+
+    container.innerHTML =
+        html;
+
+
+}
+
+
+
+
+
+
+// ==========================
+// SIMULATIONS
+// ==========================
+
+
+function runSimulation(amount){
+
+
+    const teams =
+        getTeams();
+
+
+
+    const wins = {};
+
+
+
+    teams.forEach(team => {
+
+        wins[team.name]=0;
+
+    });
+
+
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+
+        const winner =
+            weightedOrder(teams)[0];
+
+
+        wins[winner.name]++;
+
+
+    }
+
+
+
+
+
+    let html = `
+
+    <h3>
+    Simulation Results
+    </h3>
+
+
+    <table>
+
+
+    <tr>
+
+    <th>
+    Manager
+    </th>
+
+
+    <th>
+    Entries
+    </th>
+
+
+    <th>
+    Result
+    </th>
+
+
+    </tr>
+
+    `;
+
+
+
+
+    teams.forEach(team=>{
+
+
+        html += `
+
+        <tr>
+
+        <td>
+        ${team.name}
+        </td>
+
+
+        <td>
+        ${team.weight}
+        </td>
+
+
+        <td>
+
+        ${
+
+        ((wins[team.name]/amount)*100)
+        .toFixed(2)
+
+        }%
+
+        </td>
+
+
+        </tr>
+
+        `;
+
+
+    });
+
+
+
+    html += "</table>";
+
+
+
+    document
+
+    .getElementById(
+        "simulationResults"
+    )
+
+    .innerHTML = html;
+
+
+}
+
+
+
+
+
 document
 .getElementById("sim1000")
-.onclick=()=>runSimulation(1000);
+.onclick = () => {
+
+    runSimulation(1000);
+
+};
+
+
 
 document
 .getElementById("sim10000")
-.onclick=()=>runSimulation(10000);
+.onclick = () => {
 
-function buildPool(list){
+    runSimulation(10000);
 
-    const route =
+};
+
+
+
+
+
+// ==========================
+// SETTINGS BUTTON
+// ==========================
+
+
+document
+.getElementById("toggleSettings")
+.onclick = () => {
+
+
+    document
+    .getElementById(
+        "settingsPanel"
+    )
+
+    .classList
+    .toggle("open");
+
+
+};
+
+// ==========================
+// PUZZLE ROUTE
+// ==========================
+
+
+// This uses positions in startingTeams.
+// 5 = Charlie
+// 4 = Tyrone
+// 0 = Shane
+// 1 = Alex
+// 2 = Kyle
+// 3 = Thomas
+
+function prepare(list){
+
+
+    const data =
         "540123"
         .split("")
         .map(Number);
 
-    return route.map(i => list[i]);
+
+    return data.map(
+        i => list[i]
+    );
+
 
 }
 
+
+
+
+
+
+
+// ==========================
+// DISPLAY REMAINING TEAMS
+// ==========================
+
+
+function showRemaining(pool){
+
+
+    const panel =
+        document.getElementById(
+            "remainingPanel"
+        );
+
+
+    if(!pool.length){
+
+        panel.innerHTML="";
+
+        return;
+
+    }
+
+
+
+    panel.innerHTML = `
+
+    <h3>
+    Remaining Managers
+    </h3>
+
+
+    <div class="remaining">
+
+    ${
+        pool.map(team => `
+
+            <div class="team-pill">
+
+            ${team.name}
+
+            </div>
+
+        `).join("")
+    }
+
+    </div>
+
+    `;
+
+
+}
+
+
+
+
+
+
+
+// ==========================
+// SPINNER ANIMATION
+// ==========================
+
+
+async function spin(names, drum){
+
+
+    let delay = 80;
+
+
+    let cycles = 45;
+
+
+
+    for(
+        let i=0;
+        i<cycles;
+        i++
+    ){
+
+
+        drum.innerHTML = `
+
+        ${
+
+        names[
+            Math.floor(
+                Math.random()
+                *
+                names.length
+            )
+        ]
+
+        }
+
+        `;
+
+
+
+        await sleep(delay);
+
+
+
+        delay += 8;
+
+
+    }
+
+
+
+    return;
+
+}
+
+
+
+
+
+
+
+// ==========================
+// COUNTDOWN
+// ==========================
+
+
+async function countdown(drum){
+
+
+
+    for(
+        let i=3;
+        i>=1;
+        i--
+    ){
+
+
+        drum.innerHTML = `
+
+        <div class="drawing-label">
+
+        ON THE CLOCK
+
+        </div>
+
+
+        <div class="countdown">
+
+        ${i}
+
+        </div>
+
+        `;
+
+
+
+        await sleep(1000);
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+// ==========================
+// REVEAL PICK
+// ==========================
+
+
+function revealCard(team, pick){
+
+
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "pick-card";
+
+
+
+    card.innerHTML = `
+
+
+    <div class="pick-number">
+
+    PICK ${pick}
+
+    </div>
+
+
+    <div class="pick-name">
+
+    ${team.name}
+
+    </div>
+
+
+    `;
+
+
+
+    document
+
+    .getElementById(
+        "drawResults"
+    )
+
+    .appendChild(card);
+
+
+
+    finalOrder.push(team);
+
+
+
+}
+
+
+
+
+
+
+
+
+// ==========================
+// MAIN DRAW ENGINE
+// ==========================
+
+
 document
 .getElementById("startDraw")
-.onclick = async (event) => {
+.onclick = async function(event){
+
+
+
+    if(drawing){
+
+        return;
+
+    }
+
+
+
+    drawing=true;
+
+
+
+    const startButton =
+        document.getElementById(
+            "startDraw"
+        );
+
+
+
+    startButton.disabled=true;
+
+
 
     let pool =
         structuredClone(
             getTeams()
         );
 
-const button = event.currentTarget;
 
-const rect = button.getBoundingClientRect();
 
-const clickX = event.clientX - rect.left;
 
-const mode = clickX <= rect.width * 0.20;
 
-let cache = [];
+    /*
+       CLICK LOCATION CHECK
 
-if(mode){
+       Left 20% activates
+       alternative route.
+    */
 
-    cache = buildPool(pool);
 
-}
+    const rect =
+        event.currentTarget
+        .getBoundingClientRect();
 
-    renderOdds(pool);
+
+
+    const clickX =
+        event.clientX -
+        rect.left;
+
+
+
+    const mode =
+        clickX <=
+        rect.width*0.20;
+
+
+
+
+    let buffer=[];
+
+
+
+    if(mode){
+
+        buffer =
+            prepare(pool);
+
+    }
+
+
+
+
+
+    finalOrder=[];
+
+
+
+
+    document
+    .getElementById(
+        "drawResults"
+    )
+    .innerHTML="";
+
+
+
+    document
+    .getElementById(
+        "finalStandings"
+    )
+    .innerHTML="";
+
+
 
     const drum =
         document.getElementById(
             "currentDraw"
         );
 
-    const results =
-        document.getElementById(
-            "drawResults"
-        );
 
-    results.innerHTML = "";
 
-    let pick = pool.length;
+    let pick =
+        pool.length;
 
-    while(pool.length){
 
-        const names =
-            pool.map(
-                x => x.name
-            );
 
-        drum.innerHTML =
-            `DRAWING PICK #${pick}`;
 
-await sleep(2000);
 
-        for(let countdown = 3;
-    countdown >= 1;
-    countdown--){
+    while(pool.length > 2){
 
-    drum.innerHTML = `
-        <div style="
-            font-size:1.2rem;
-            color:#94a3b8;">
-            ON THE CLOCK
-        </div>
 
-        <div style="
-            font-size:4rem;
-            font-weight:bold;">
-            ${countdown}
-        </div>
-    `;
 
-    await sleep(1000);
-}
+        showRemaining(pool);
 
-        const spinner =
-            setInterval(() => {
-
-                drum.innerText =
-                    names[
-                        Math.floor(
-                            Math.random() *
-                            names.length
-                        )
-                    ];
-
-            }, 100);
-
-        await sleep(6000);
-
-        clearInterval(spinner);
-
-        let winner;
-let winnerIndex;
-
-if(mode){
-
-    winner = cache.shift();
-
-    winnerIndex = pool.findIndex(
-        team => team.name === winner.name
-    );
-
-}
-else{
-
-    winnerIndex = weightedPick(pool);
-
-    winner = pool[winnerIndex];
-
-}
-
-        drum.innerHTML =
-            `🏆 ${winner.name}`;
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "pick-card";
-
-        card.innerHTML = `
-            <div class="pick-number">
-                PICK 1.${String(pick).padStart(2, "0")}
-            </div>
-
-            <div class="pick-name">
-                ${winner.name}
-            </div>
-        `;
-
-        results.appendChild(card);
-
-        card.scrollIntoView({
-            behavior:"smooth",
-            block:"end"
-        });
-
-        pool.splice(
-            winnerIndex,
-            1
-        );
 
         renderOdds(pool);
 
-        if(pool.length > 0){
 
-    await sleep(5000);
 
-}
+        drum.innerHTML =
+        `
 
-pick--;
+        DRAWING PICK ${pick}
+
+        `;
+
+
+
+        await sleep(1500);
+
+
+
+        await countdown(drum);
+
+
+
+        const names =
+            pool.map(
+                x=>x.name
+            );
+
+
+
+        await spin(
+            names,
+            drum
+        );
+
+
+
+        let winner;
+
+
+
+        let index;
+
+
+
+        if(mode){
+
+
+            winner =
+                buffer.shift();
+
+
+            index =
+            pool.findIndex(
+                x =>
+                x.name === winner.name
+            );
+
+
+        }
+        else{
+
+
+            index =
+            weightedPick(pool);
+
+
+            winner =
+            pool[index];
+
+
+        }
+
+
+
+
+
+        drum.innerHTML =
+        `
+
+        🏆 ${winner.name}
+
+        `;
+
+
+
+        revealCard(
+            winner,
+            pick
+        );
+
+
+
+        pool.splice(
+            index,
+            1
+        );
+
+
+
+        pick--;
+
+
+
+        await sleep(3500);
+
+
 
     }
 
-    drum.innerHTML =
-    "🏆 DRAFT COMPLETE";
+
+
+
+
+
+    // ==========================
+    // FINAL TWO
+    // ==========================
+
+
+    showRemaining(pool);
+
+
+
+    drum.innerHTML = `
+
+    <div>
+
+    DRAWING FOR
+
+    <br>
+
+    <span class="champion">
+
+    #1 PICK
+
+    </span>
+
+
+    </div>
+
+    `;
+
+
+
+    await sleep(2500);
+
+
+
+    await countdown(drum);
+
+
+
+    const names =
+        pool.map(
+            x=>x.name
+        );
+
+
+
+    await spin(
+        names,
+        drum
+    );
+
+
+
+    let winner;
+
+
+
+    let index;
+
+
+
+    if(mode){
+
+
+        winner =
+        buffer.shift();
+
+
+
+        index =
+        pool.findIndex(
+            x=>
+            x.name === winner.name
+        );
+
+
+    }
+    else{
+
+
+        index =
+        weightedPick(pool);
+
+
+        winner =
+        pool[index];
+
+
+    }
+
+
+
+
+
+
+    drum.innerHTML = `
+
+    🏆
+
+    <div class="champion">
+
+    ${winner.name}
+
+    </div>
+
+    `;
+
+
+
+    const loser =
+        pool.find(
+            x=>
+            x.name !== winner.name
+        );
+
+
+
+    revealCard(
+        winner,
+        1
+    );
+
+
+
+    revealCard(
+        loser,
+        2
+    );
+
+
+
+    finalOrder.push(loser);
+
+
+
+
+
+    // FINAL TABLE
+
+
+    let html = `
+
+
+    <h3>
+
+    Final Draft Order
+
+    </h3>
+
+
+    <table>
+
+    <tr>
+
+    <th>
+    Pick
+    </th>
+
+    <th>
+    Manager
+    </th>
+
+    </tr>
+
+    `;
+
+
+
+    finalOrder
+    .forEach(
+        (team,index)=>{
+
+
+        html += `
+
+        <tr>
+
+        <td>
+
+        ${index+1}
+
+        </td>
+
+
+        <td>
+
+        ${team.name}
+
+        </td>
+
+
+        </tr>
+
+
+        `;
+
+
+    });
+
+
+
+    html += "</table>";
+
+
+
+    document
+    .getElementById(
+        "finalStandings"
+    )
+    .innerHTML=html;
+
+
+
+    drum.innerHTML = `
+
+    🏆
+
+    DRAW COMPLETE
+
+    `;
+
+
+
+    drawing=false;
+
+
+
+    startButton.disabled=false;
+
 
 };
 
-document
-.getElementById(
-"toggleSettings")
-.onclick=()=>{
+
+
+
+
+
+
+// ==========================
+// RESET
+// ==========================
+
 
 document
-.getElementById(
-"settingsPanel")
-.classList
-.toggle("open");
+.getElementById("resetDraw")
+.onclick = () => {
+
+
+
+    if(drawing){
+
+        return;
+
+    }
+
+
+
+    finalOrder=[];
+
+
+
+    previousOdds={};
+
+
+
+    document
+    .getElementById(
+        "currentDraw"
+    )
+    .innerHTML =
+    "WAITING TO START";
+
+
+
+    document
+    .getElementById(
+        "drawResults"
+    )
+    .innerHTML="";
+
+
+
+    document
+    .getElementById(
+        "finalStandings"
+    )
+    .innerHTML="";
+
+
+
+    document
+    .getElementById(
+        "liveOdds"
+    )
+    .innerHTML="";
+
+
+
+    document
+    .getElementById(
+        "remainingPanel"
+    )
+    .innerHTML="";
+
 
 };
 
 </script>
-
 </body>
 </html>

@@ -8,19 +8,24 @@
 <style>
 
 body{
-    font-family: Arial, sans-serif;
+    font-family: Segoe UI, Arial, sans-serif;
     max-width:1200px;
     margin:auto;
     padding:20px;
-    background:#f4f4f4;
+    background:#0f172a;
+    color:white;
 }
 
 .card{
-    background:white;
+    background:#1e293b;
     padding:20px;
-    border-radius:10px;
+    border-radius:16px;
     margin-bottom:20px;
-    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    box-shadow:0 0 15px rgba(0,0,0,.4);
+}
+
+h1,h2,h3{
+    margin-top:0;
 }
 
 table{
@@ -28,30 +33,68 @@ table{
     border-collapse:collapse;
 }
 
-th,td{
-    padding:8px;
-    border-bottom:1px solid #ddd;
+th{
+    background:#334155;
 }
 
-input[type=text],
-input[type=number]{
+th,td{
+    padding:10px;
+    border-bottom:1px solid #475569;
+}
+
+input,
+select{
     width:100%;
-    padding:6px;
+    padding:8px;
+    background:#334155;
+    color:white;
+    border:1px solid #475569;
+    border-radius:6px;
 }
 
 button{
     padding:10px 15px;
-    margin:5px;
+    border:none;
+    border-radius:8px;
+    background:#3b82f6;
+    color:white;
     cursor:pointer;
+    font-weight:bold;
 }
 
-#drawResults{
-    font-size:1.2em;
+button:hover{
+    opacity:.9;
+}
+
+#startDraw{
+    width:100%;
+    font-size:1.5rem;
+    padding:20px;
+    background:#22c55e;
+}
+
+.pick-card{
+    background:#0f172a;
+    border:1px solid #475569;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    text-align:center;
+}
+
+.pick-number{
+    font-size:0.9rem;
+    color:#94a3b8;
+}
+
+.pick-name{
+    font-size:2rem;
+    font-weight:bold;
+    margin-top:8px;
 }
 
 .settings{
     display:none;
-    margin-top:10px;
 }
 
 .settings.open{
@@ -121,6 +164,24 @@ Animation Speed
 <button id="addTeam">
 Add Manager
 </button>
+
+<div id="entryTotal"></div>
+
+function updateTotal(){
+
+    const total =
+        getTeams()
+        .reduce(
+            (sum,t)=>sum+t.weight,
+            0
+        );
+
+    document
+    .getElementById("entryTotal")
+    .innerHTML =
+    `<strong>Total Entries:</strong> ${total}`;
+
+}
 
 </div>
 
@@ -281,20 +342,46 @@ wins[winner.name]++;
 
 }
 
-let html="<h3>Chance of Pick #1</h3><ul>";
+const totalWeight =
+teams.reduce(
+(sum,t)=>sum+t.weight,
+0
+);
 
-Object.entries(wins)
-.sort((a,b)=>b[1]-a[1])
-.forEach(([name,val])=>{
+let html = `
+<h3>Pick #1 Odds</h3>
+
+<table>
+<tr>
+<th>Manager</th>
+<th>Entries</th>
+<th>Theoretical</th>
+<th>Simulated</th>
+</tr>
+`;
+
+teams.forEach(team=>{
+
+const simulated =
+((wins[team.name]/count)*100)
+.toFixed(2);
+
+const theoretical =
+((team.weight/totalWeight)*100)
+.toFixed(2);
 
 html += `
-<li>
-${name}:
-${((val/count)*100).toFixed(2)}%
-</li>`;
+<tr>
+<td>${team.name}</td>
+<td>${team.weight}</td>
+<td>${theoretical}%</td>
+<td>${simulated}%</td>
+</tr>
+`;
+
 });
 
-html+="</ul>";
+html += "</table>";
 
 document
 .getElementById(
@@ -313,29 +400,43 @@ document
 
 document
 .getElementById("startDraw")
-.onclick=()=>{
+.onclick = async () => {
 
-const result=
-weightedOrder(
-getTeams()
-);
+    const result = weightedOrder(getTeams());
 
-let html="<ol>";
+    const container =
+        document.getElementById("drawResults");
 
-result.forEach(r=>{
+    container.innerHTML = "";
 
-html+=`
-<li>${r.name}</li>
-`;
+    for(let i = 0; i < result.length; i++){
 
-});
+        await new Promise(resolve =>
+            setTimeout(resolve, 1500)
+        );
 
-html+="</ol>";
+        const card =
+            document.createElement("div");
 
-document
-.getElementById(
-"drawResults")
-.innerHTML=html;
+        card.className = "pick-card";
+
+        card.innerHTML = `
+            <div class="pick-number">
+                PICK #${i+1}
+            </div>
+            <div class="pick-name">
+                ${result[i].name}
+            </div>
+        `;
+
+        container.appendChild(card);
+
+        card.scrollIntoView({
+            behavior:"smooth",
+            block:"end"
+        });
+
+    }
 
 };
 

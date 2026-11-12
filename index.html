@@ -254,6 +254,8 @@ START DRAW
 
 const teamTable = document.getElementById("teamTable");
 
+let previousOdds = {};
+
 const startingTeams = [
 ["Shane",12],
 ["Alex",8],
@@ -401,23 +403,73 @@ function renderOdds(teams){
             0
         );
 
+    teams.forEach(team=>{
+
+        team.currentOdds =
+            (team.weight / total) * 100;
+
+    });
+
+    teams.sort(
+        (a,b) =>
+            b.currentOdds -
+            a.currentOdds
+    );
+
     let html = `
-        <h3>Remaining Odds</h3>
+        <h3>🏆 Race For #1 Pick</h3>
+
         <table>
         <tr>
+            <th>Rank</th>
             <th>Manager</th>
-            <th>Entries</th>
-            <th>Chance</th>
+            <th>Chance of #1</th>
         </tr>
     `;
 
-    teams.forEach(team=>{
+    teams.forEach((team,index)=>{
+
+        const medals = [
+            "🥇",
+            "🥈",
+            "🥉"
+        ];
+
+        const rank =
+            medals[index] ||
+            (index + 1);
+
+        let previous =
+            previousOdds[team.name];
+
+        let change = "";
+
+        if(previous !== undefined){
+
+            const diff =
+                team.currentOdds -
+                previous;
+
+            if(diff > 0){
+
+                change =
+                ` <span style="color:#22c55e;">
+                ↑ +${diff.toFixed(2)}%
+                </span>`;
+            }
+        }
+
+        previousOdds[team.name] =
+            team.currentOdds;
 
         html += `
             <tr>
+                <td>${rank}</td>
                 <td>${team.name}</td>
-                <td>${team.weight}</td>
-                <td>${((team.weight/total)*100).toFixed(2)}%</td>
+                <td>
+                    ${team.currentOdds.toFixed(2)}%
+                    ${change}
+                </td>
             </tr>
         `;
 
@@ -428,9 +480,7 @@ function renderOdds(teams){
     document
         .getElementById("liveOdds")
         .innerHTML = html;
-
 }
-
 function runSimulation(count){
 
 const teams=getTeams();
@@ -541,7 +591,31 @@ document
         drum.innerHTML =
             `DRAWING PICK #${pick}`;
 
-        await sleep(4000);
+        drum.innerHTML =
+    `DRAWING PICK #${pick}`;
+
+await sleep(2000);
+
+        for(let countdown = 3;
+    countdown >= 1;
+    countdown--){
+
+    drum.innerHTML = `
+        <div style="
+            font-size:1.2rem;
+            color:#94a3b8;">
+            ON THE CLOCK
+        </div>
+
+        <div style="
+            font-size:4rem;
+            font-weight:bold;">
+            ${countdown}
+        </div>
+    `;
+
+    await sleep(1000);
+}
 
         const spinner =
             setInterval(() => {
@@ -556,7 +630,7 @@ document
 
             }, 100);
 
-        await sleep(7000);
+        await sleep(6000);
 
         clearInterval(spinner);
 
@@ -599,7 +673,7 @@ document
 
         renderOdds(pool);
 
-        await sleep(5000);
+        await sleep(4000);
 
         pick++;
 

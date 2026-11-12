@@ -244,9 +244,9 @@ WAITING TO START
 START DRAW
 </button>
 
-<div id="drawResults"></div>
-
 <div id="liveOdds"></div>
+
+<div id="drawResults"></div>
 
 </div>
 
@@ -541,6 +541,8 @@ document
         drum.innerHTML =
             `DRAWING PICK #${pick}`;
 
+        await sleep(4000);
+
         const spinner =
             setInterval(() => {
 
@@ -554,7 +556,7 @@ document
 
             }, 100);
 
-        await sleep(4000);
+        await sleep(7000);
 
         clearInterval(spinner);
 
@@ -597,7 +599,7 @@ document
 
         renderOdds(pool);
 
-        await sleep(2500);
+        await sleep(5000);
 
         pick++;
 

@@ -1635,7 +1635,7 @@ async function spin(names, drum){
     let delay = 80;
 
 
-    let cycles = 45;
+    let cycles = 30;
 
 
 
@@ -1668,7 +1668,7 @@ async function spin(names, drum){
 
 
 
-        delay += 8;
+        delay += 12;
 
 
     }
@@ -2027,7 +2027,7 @@ document
 
 
 
-        await sleep(3500);
+        await sleep(2000);
 
 
 
@@ -2045,7 +2045,7 @@ document
 
     showRemaining(pool);
 
-
+renderOdds(pool);
 
     drum.innerHTML = `
 
@@ -2134,15 +2134,42 @@ document
 
     drum.innerHTML = `
 
-    🏆
+<div>
 
-    <div class="champion">
+<div class="drawing-label">
+CONGRATULATIONS
+</div>
 
-    ${winner.name}
 
-    </div>
+<div class="champion">
+🏆 ${winner.name}
+</div>
 
-    `;
+
+<div style="margin-top:20px;font-size:1.4rem;">
+#1 PICK WINNER
+</div>
+
+
+<div class="progress" style="margin-top:20px;">
+
+<div 
+class="progress-fill"
+style="width:100%">
+
+</div>
+
+</div>
+
+
+<div style="margin-top:10px;">
+100%
+</div>
+
+
+</div>
+
+`;
 
 
 
@@ -2159,8 +2186,30 @@ document
         1
     );
 
+renderOdds([
+    {
+        name:winner.name,
+        weight:1
+    }
+]);
+
+await sleep(2500);
 
 
+drum.innerHTML += `
+
+<div style="
+margin-top:20px;
+font-size:1.2rem;
+color:#94a3b8;
+">
+
+${loser.name} automatically receives Pick #2
+
+</div>
+
+`;
+    
     revealCard(
         loser,
         2
@@ -2250,13 +2299,10 @@ document
 
 
 
-    drum.innerHTML = `
-
-    🏆
-
-    DRAW COMPLETE
-
-    `;
+    drum.scrollIntoView({
+    behavior:"smooth",
+    block:"center"
+});
 
 
 

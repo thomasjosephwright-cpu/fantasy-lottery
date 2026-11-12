@@ -1,13 +1,356 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Fantasy Lottery</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fantasy Draft Lottery</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+    background:#f4f4f4;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+
+input[type=text],
+input[type=number]{
+    width:100%;
+    padding:6px;
+}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    cursor:pointer;
+}
+
+#drawResults{
+    font-size:1.2em;
+}
+
+.settings{
+    display:none;
+    margin-top:10px;
+}
+
+.settings.open{
+    display:block;
+}
+
+</style>
 </head>
+
 <body>
 
-<h1>Fantasy Football Lottery</h1>
+<div class="card">
 
-<p>If you can see this page, GitHub Pages is working.</p>
+<h1>Fantasy Draft Lottery</h1>
+
+<button id="toggleSettings">
+Settings
+</button>
+
+<div id="settingsPanel" class="settings">
+
+<h3>Animation</h3>
+
+<label>
+Reveal Style
+<select id="revealStyle">
+<option>Smooth</option>
+<option>Sequential</option>
+<option>Historical</option>
+</select>
+</label>
+
+<br><br>
+
+<label>
+Animation Speed
+<select>
+<option>Fast</option>
+<option selected>Normal</option>
+<option>Slow</option>
+</select>
+</label>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Lottery Entries</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>Manager</th>
+<th>Entries</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody id="teamTable">
+</tbody>
+
+</table>
+
+<button id="addTeam">
+Add Manager
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>Simulation</h2>
+
+<button id="sim1000">
+Run 1,000 Simulations
+</button>
+
+<button id="sim10000">
+Run 10,000 Simulations
+</button>
+
+<div id="simulationResults"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Draft Draw</h2>
+
+<button id="startDraw">
+START DRAW
+</button>
+
+<div id="drawResults"></div>
+
+</div>
+
+<script>
+
+const teamTable = document.getElementById("teamTable");
+
+const startingTeams = [
+["Kyle",15],
+["Tom",120],
+["Steve",75],
+["Ben",90]
+];
+
+function addRow(name="", entries=10){
+
+const tr=document.createElement("tr");
+
+tr.innerHTML=`
+<td>
+<input type="text" value="${name}">
+</td>
+
+<td>
+<input type="number" min="1" value="${entries}">
+</td>
+
+<td>
+<button class="remove">
+Remove
+</button>
+</td>
+`;
+
+tr.querySelector(".remove").onclick=()=>{
+tr.remove();
+};
+
+teamTable.appendChild(tr);
+
+}
+
+startingTeams.forEach(t=>addRow(t[0],t[1]));
+
+document.getElementById("addTeam")
+.onclick=()=>{
+addRow("New Manager",10);
+};
+
+function getTeams(){
+
+return [...teamTable.children]
+.map(row=>({
+
+name:
+row.cells[0]
+.querySelector("input").value,
+
+weight:
+Number(
+row.cells[1]
+.querySelector("input").value)
+
+}))
+.filter(t=>t.weight>0);
+
+}
+
+function weightedPick(pool){
+
+const total=
+pool.reduce((s,p)=>
+s+p.weight,0);
+
+let r=Math.random()*total;
+
+for(let i=0;i<pool.length;i++){
+
+r-=pool[i].weight;
+
+if(r<=0){
+return i;
+}
+
+}
+
+return 0;
+
+}
+
+function weightedOrder(data){
+
+let pool=structuredClone(data);
+
+let order=[];
+
+while(pool.length){
+
+const idx=
+weightedPick(pool);
+
+order.push(pool[idx]);
+
+pool.splice(idx,1);
+
+}
+
+return order;
+
+}
+
+function runSimulation(count){
+
+const teams=getTeams();
+
+const wins={};
+
+teams.forEach(
+t=>wins[t.name]=0
+);
+
+for(let i=0;i<count;i++){
+
+const winner=
+weightedOrder(teams)[0];
+
+wins[winner.name]++;
+
+}
+
+let html="<h3>Chance of Pick #1</h3><ul>";
+
+Object.entries(wins)
+.sort((a,b)=>b[1]-a[1])
+.forEach(([name,val])=>{
+
+html += `
+<li>
+${name}:
+${((val/count)*100).toFixed(2)}%
+</li>`;
+});
+
+html+="</ul>";
+
+document
+.getElementById(
+"simulationResults")
+.innerHTML = html;
+
+}
+
+document
+.getElementById("sim1000")
+.onclick=()=>runSimulation(1000);
+
+document
+.getElementById("sim10000")
+.onclick=()=>runSimulation(10000);
+
+document
+.getElementById("startDraw")
+.onclick=()=>{
+
+const result=
+weightedOrder(
+getTeams()
+);
+
+let html="<ol>";
+
+result.forEach(r=>{
+
+html+=`
+<li>${r.name}</li>
+`;
+
+});
+
+html+="</ol>";
+
+document
+.getElementById(
+"drawResults")
+.innerHTML=html;
+
+};
+
+document
+.getElementById(
+"toggleSettings")
+.onclick=()=>{
+
+document
+.getElementById(
+"settingsPanel")
+.classList
+.toggle("open");
+
+};
+
+</script>
 
 </body>
 </html>

@@ -579,7 +579,7 @@ document
 
     results.innerHTML = "";
 
-    let pick = 1;
+    let pick = pool.length;
 
     while(pool.length){
 
@@ -651,7 +651,7 @@ await sleep(2000);
 
         card.innerHTML = `
             <div class="pick-number">
-                PICK #${pick}
+                PICK 1.${String(pick).padStart(2, "0")}
             </div>
 
             <div class="pick-name">
@@ -675,7 +675,7 @@ await sleep(2000);
 
         await sleep(4000);
 
-        pick++;
+        pick--;
 
     }
 

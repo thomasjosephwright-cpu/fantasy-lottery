@@ -1278,14 +1278,16 @@ function renderOdds(teams){
 
 
 
-    teams
+    const displayTeams = [...teams];
 
-    .sort(
-        (a,b)=>
-        b.weight-a.weight
-    )
+displayTeams
 
-    .forEach(team => {
+.sort(
+    (a,b)=>
+    b.weight-a.weight
+)
+
+.forEach(team => {
 
 
         const chance =
@@ -2187,10 +2189,10 @@ style="width:100%">
     );
 
 renderOdds([
-    {
-        name:winner.name,
-        weight:1
-    }
+{
+name:winner.name,
+weight:100
+}
 ]);
 
 await sleep(2500);
@@ -2214,14 +2216,6 @@ ${loser.name} automatically receives Pick #2
         loser,
         2
     );
-
-
-
-    finalOrder.push(loser);
-
-
-
-
 
     // FINAL TABLE
 
@@ -2254,36 +2248,31 @@ ${loser.name} automatically receives Pick #2
 
 
 
-    finalOrder
-    .forEach(
-        (team,index)=>{
+[...finalOrder]
+.reverse()
+.forEach((team,index)=>{
 
+html += `
 
-        html += `
+<tr>
 
-        <tr>
+<td>
 
-        <td>
+${index + 1}
 
-        ${index+1}
+</td>
 
-        </td>
+<td>
 
+${team.name}
 
-        <td>
+</td>
 
-        ${team.name}
+</tr>
 
-        </td>
+`;
 
-
-        </tr>
-
-
-        `;
-
-
-    });
+});
 
 
 
